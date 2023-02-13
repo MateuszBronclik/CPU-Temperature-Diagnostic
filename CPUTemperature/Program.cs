@@ -4,6 +4,8 @@ using System.Management;
 using System.Threading;
 using System.Collections.Generic;
 using Figgle;
+using System.Xml.Serialization;
+using System.Linq.Expressions;
 
 namespace CPUTemperature
 {
@@ -50,52 +52,64 @@ namespace CPUTemperature
             TimeSpan endTime = TimeSpan.FromMinutes(duration);
             TimeSpan elapsedTime = TimeSpan.Zero;
             DateTime startTime = DateTime.Now;
-
-            while (elapsedTime < endTime)
+            try
             {
-                double temperature = GetCPUTemperature();
-                Console.WriteLine("Current CPU temperature: " + temperature + "°C");
-                Console.WriteLine($"Time remaining until completion: {endTime - elapsedTime:mm\\:ss}");
+                while (elapsedTime < endTime)
+                {
+                    double temperature = GetCPUTemperature();
+                    Console.WriteLine("Current CPU temperature: " + temperature + "°C");
+                    Console.WriteLine($"Time remaining until completion: {endTime - elapsedTime:mm\\:ss}");
 
-                temperatures.Add(temperature);
+                    temperatures.Add(temperature);
 
-                Thread.Sleep(1000);
-                elapsedTime = DateTime.Now - startTime;
-                Console.Clear();
+                    Thread.Sleep(1000);
+                    elapsedTime = DateTime.Now - startTime;
+                    Console.Clear();
+                }
+
+                Console.ForegroundColor = temperatures.Average() >= 75 ? ConsoleColor.Red : ConsoleColor.Green;
+                double averageTemperature = temperatures.Average();
+                double maxTemperature = temperatures.Max();
+                Console.WriteLine($"Average CPU temperature in the last {duration} minutes: {averageTemperature}°C");
+                Console.WriteLine($"Highest recorded temperature: {maxTemperature}");
+
+                if (averageTemperature >= 75)
+                {
+                    Console.WriteLine("A temperature higher than 75° is considered potentially dangerous for the CPU.");
+                }
+                else
+                {
+                    Console.WriteLine("Everything from 40° to 75° is consider as a normal temperature");
+                }
+                Console.WriteLine("Press any key to exit");
+                Console.ReadLine();
+            }
+            catch (ManagementException ex)
+            {
+                Console.ForegroundColor= ConsoleColor.Red;
+                Console.WriteLine("Access denied. Please exit and run Visual Studio as administrator.");
+                return;
             }
 
-            Console.ForegroundColor = temperatures.Average() >= 75 ? ConsoleColor.Red : ConsoleColor.Green;
-            double averageTemperature = temperatures.Average();
-            double maxTemperature = temperatures.Max();
-            Console.WriteLine($"Average CPU temperature in the last {duration} minutes: {averageTemperature}°C");
-            Console.WriteLine($"Highest recorded temperature: {maxTemperature}");
 
-            if (averageTemperature >= 75)
-            {
-                Console.WriteLine("A temperature higher than 75° is considered potentially dangerous for the CPU.");
-            }
-            else
-            {
-                Console.WriteLine("Everything from 20° to 75° is consider as a normal temperature");
-            }
-            Console.WriteLine("Press any key to exit");
-            Console.ReadLine();
         }
 
         private static double GetCPUTemperature()
         {
-            var query = "SELECT * FROM MSAcpi_ThermalZoneTemperature";
-            double temperature = 0;
-            double absoluteZero = -273.15;
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\WMI", query);
-            foreach (ManagementObject obj in searcher.Get())
             {
-                temperature = (double)((UInt32)obj["CurrentTemperature"] / 10 + absoluteZero);
-                break;
+                var query = "SELECT * FROM MSAcpi_ThermalZoneTemperature";
+                double temperature = 0;
+                double absoluteZero = -273.15;
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\WMI", query);
+                foreach (ManagementObject obj in searcher.Get())
+                {
+                    temperature = (double)((UInt32)obj["CurrentTemperature"] / 10 + absoluteZero);
+                    break;
+                }
+                Console.ForegroundColor = temperature <= 75 ? ConsoleColor.Green : ConsoleColor.Red;
+                return temperature;
             }
-
-            Console.ForegroundColor = temperature <= 75 ? ConsoleColor.Green : ConsoleColor.Red;
-            return temperature;
+            
         }
 
         private static void DisplayResult(double averageTemperature, double maxTemperature, int duration)
