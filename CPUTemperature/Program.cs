@@ -1,11 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Management;
-using System.Threading;
-using System.Collections.Generic;
+﻿using System.Management;
 using Figgle;
-using System.Xml.Serialization;
-using System.Linq.Expressions;
 
 namespace CPUTemperature
 {
@@ -14,13 +8,13 @@ namespace CPUTemperature
         static void Main(string[] args)
         {
             Console.WriteLine(FiggleFonts.Larry3d.Render("cpu thermometer"));
-            Console.WriteLine("CPU Temperature checker |\nPlease select duration of Temperature Test\n");
+            Console.WriteLine("CPU Temperature Diagnostic Tool |\nPlease select duration of Test!\n");
             Console.WriteLine("1. 5 minutes");
             Console.WriteLine("2. 10 minutes");
             Console.WriteLine("3. 15 minutes");
             Console.WriteLine("4. 30 minutes");
             Console.WriteLine("5. 1 hour");
-            Console.WriteLine("\nInput coresponding number and confirm with [Enter] key");
+            Console.WriteLine("\nInput coresponding number and confirm with [Enter] key:");
 
             int choice = int.Parse(Console.ReadLine());
 
@@ -57,7 +51,7 @@ namespace CPUTemperature
                 while (elapsedTime < endTime)
                 {
                     double temperature = GetCPUTemperature();
-                    Console.WriteLine("Current CPU temperature: " + temperature + "°C");
+                    Console.WriteLine($"Current CPU temperature: {temperature} °C");
                     Console.WriteLine($"Time remaining until completion: {endTime - elapsedTime:mm\\:ss}");
 
                     temperatures.Add(temperature);
@@ -73,27 +67,14 @@ namespace CPUTemperature
                 Console.WriteLine($"Average CPU temperature in the last {duration} minutes: {averageTemperature}°C");
                 Console.WriteLine($"Highest recorded temperature: {maxTemperature}");
 
-                if (averageTemperature >= 75)
-                {
-                    Console.WriteLine("A temperature higher than 75° is considered potentially dangerous for the CPU.");
-                }
-                else
-                {
-                    Console.WriteLine("Everything from 40° to 75° is consider as a normal temperature");
-                }
-                Console.WriteLine("Press any key to exit");
-                Console.ReadLine();
             }
             catch (ManagementException ex)
             {
                 Console.ForegroundColor= ConsoleColor.Red;
-                Console.WriteLine("Access denied. Please exit and run Visual Studio as administrator.");
+                Console.WriteLine("**** Access denied. Please exit and run Visual Studio as administrator. ****");
                 return;
             }
-
-
         }
-
         private static double GetCPUTemperature()
         {
             {
@@ -107,12 +88,13 @@ namespace CPUTemperature
                     break;
                 }
                 Console.ForegroundColor = temperature <= 75 ? ConsoleColor.Green : ConsoleColor.Red;
+                temperature = Math.Round(temperature, 2);
                 return temperature;
+
             }
             
         }
-
-        private static void DisplayResult(double averageTemperature, double maxTemperature, int duration)
+        private static void FinalResult(double averageTemperature, double maxTemperature, int duration)
         {
             Console.WriteLine($"Average CPU temperature in the last: {duration} minutes: {averageTemperature}°C");
             Console.WriteLine($"Highest recorded temperature: {maxTemperature}°C");
@@ -121,13 +103,13 @@ namespace CPUTemperature
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("A temperature higher than 75°C is considered potentially dangerous for the CPU.");
+                
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Everything from 40°C to 75°C is consider as a normal temperature.");
+                Console.WriteLine("A temperature below 75°C is consider as a normal temperature.");
             }
-
             Console.WriteLine("Press any key to exit");
             Console.ReadLine();
         }
