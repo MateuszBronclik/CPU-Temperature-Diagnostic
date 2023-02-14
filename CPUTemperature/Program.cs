@@ -19,12 +19,12 @@ namespace CPUTemperature
 
             int choice = int.Parse(Console.ReadLine());
 
-            double duration = 0;
+            double duration;
 
             switch (choice)
             {
                 case 1:
-                    duration = 5;
+                    duration = 1;
                     break;
                 case 2:
                     duration = 10;
@@ -66,26 +66,27 @@ namespace CPUTemperature
                 double averageTemperature = temperatures.Average();
                 averageTemperature = Math.Round(averageTemperature, 2);
                 double maxTemperature = temperatures.Max();
+
                 Console.WriteLine($"Average CPU temperature in the last {duration} minutes: {averageTemperature}°C");
                 Console.WriteLine($"Highest recorded temperature: {maxTemperature}");
                 if (averageTemperature > 75)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    
                     Console.WriteLine("A temperature higher than 75°C is considered potentially dangerous for the CPU.");
 
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("A temperature below 75°C is consider as a normal temperature.");
+                    
+                    Console.WriteLine("A temperature below 75°C is consider as a normal temperature for the CPU.");
                 }
-                Console.WriteLine("Press enter for exit...");
+                Console.WriteLine("Press [Enter] for exit...");
                 Console.ReadLine();
 
             }
             catch (ManagementException ex)
             {
-                Console.ForegroundColor= ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("**** Access denied. Please exit and run program as administrator. ****");
                 return;
             }
@@ -107,7 +108,7 @@ namespace CPUTemperature
                 return temperature;
 
             }
-            
+
         }
 
     }
