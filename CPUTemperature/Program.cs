@@ -1,4 +1,5 @@
 ﻿using System.Management;
+using System.Reflection.Metadata.Ecma335;
 using Figgle;
 
 namespace CPUTemperature
@@ -14,7 +15,7 @@ namespace CPUTemperature
             Console.WriteLine("3. 15 minutes");
             Console.WriteLine("4. 30 minutes");
             Console.WriteLine("5. 1 hour");
-            Console.WriteLine("\nInput coresponding number and confirm with [Enter] key:");
+            Console.WriteLine("\nInput coresponding number and confirm with [Enter] key: ");
 
             int choice = int.Parse(Console.ReadLine());
 
@@ -63,15 +64,29 @@ namespace CPUTemperature
 
                 Console.ForegroundColor = temperatures.Average() >= 75 ? ConsoleColor.Red : ConsoleColor.Green;
                 double averageTemperature = temperatures.Average();
+                averageTemperature = Math.Round(averageTemperature, 2);
                 double maxTemperature = temperatures.Max();
                 Console.WriteLine($"Average CPU temperature in the last {duration} minutes: {averageTemperature}°C");
                 Console.WriteLine($"Highest recorded temperature: {maxTemperature}");
+                if (averageTemperature > 75)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("A temperature higher than 75°C is considered potentially dangerous for the CPU.");
+
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("A temperature below 75°C is consider as a normal temperature.");
+                }
+                Console.WriteLine("Press enter for exit...");
+                Console.ReadLine();
 
             }
             catch (ManagementException ex)
             {
                 Console.ForegroundColor= ConsoleColor.Red;
-                Console.WriteLine("**** Access denied. Please exit and run Visual Studio as administrator. ****");
+                Console.WriteLine("**** Access denied. Please exit and run program as administrator. ****");
                 return;
             }
         }
@@ -94,25 +109,7 @@ namespace CPUTemperature
             }
             
         }
-        private static void FinalResult(double averageTemperature, double maxTemperature, int duration)
-        {
-            Console.WriteLine($"Average CPU temperature in the last: {duration} minutes: {averageTemperature}°C");
-            Console.WriteLine($"Highest recorded temperature: {maxTemperature}°C");
 
-            if (averageTemperature > 75)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("A temperature higher than 75°C is considered potentially dangerous for the CPU.");
-                
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("A temperature below 75°C is consider as a normal temperature.");
-            }
-            Console.WriteLine("Press any key to exit");
-            Console.ReadLine();
-        }
     }
 }
 
