@@ -71,13 +71,10 @@ namespace CPUTemperature
                 Console.WriteLine($"Highest recorded temperature: {maxTemperature}");
                 if (averageTemperature > 75)
                 {
-                    
                     Console.WriteLine("A temperature higher than 75°C is considered potentially dangerous for the CPU.");
-
                 }
                 else
                 {
-                    
                     Console.WriteLine("A temperature below 75°C is consider as a normal temperature for the CPU.");
                 }
                 Console.WriteLine("Press [Enter] for exit...");
@@ -106,7 +103,6 @@ namespace CPUTemperature
                 Console.ForegroundColor = temperature <= 75 ? ConsoleColor.Green : ConsoleColor.Red;
                 temperature = Math.Round(temperature, 2);
                 return temperature;
-
             }
 
         }
