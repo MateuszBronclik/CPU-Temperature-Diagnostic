@@ -24,7 +24,7 @@ namespace CPUTemperature
             switch (choice)
             {
                 case 1:
-                    duration = 1;
+                    duration = 5;
                     break;
                 case 2:
                     duration = 10;
