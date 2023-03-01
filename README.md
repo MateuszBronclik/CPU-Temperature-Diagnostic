@@ -25,3 +25,8 @@ Instructions:
 + Minimize the program and perform regular tasks on your PC as usual.
 + After the chosen duration has passed, the program will display the average temperature of the CPU.
 
+## Screenshots 
++ Main menu:
+![App Screenshot](https://github.com/MateuszBronclik/CPU-Temperature-Diagnostic/blob/main/CPUTemperature/screenshots/cpumenu.png?raw=true ) 
++ Cpu test running:
+![App Screenshot](https://github.com/MateuszBronclik/CPU-Temperature-Diagnostic/blob/main/CPUTemperature/screenshots/cputest.png?raw=true ) 
